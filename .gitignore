@@ -75,6 +75,7 @@ typings/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
+
 # Next.js build output
 .next
 
@@ -84,6 +85,8 @@ dist
 
 # Gatsby files
 .cache/
+__pycache__/
+.idea/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
