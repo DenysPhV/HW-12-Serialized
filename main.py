@@ -1,5 +1,5 @@
 import functools
-from classes import * 
+from classes import AddressBook, Phone, Name, Birthday, Record
 
 # import pickle
 
@@ -54,7 +54,7 @@ def attach(name: str, number: str):
         rec.add_phone_field(phone)
         return f"Phone number {phone} added successfully to contact {user_name}"
     
-    rec = Record(user_name, phone)
+    rec = Record(user_name, [phone])
     CONTACTS_ARRAY.add_record(rec)
     return f'Contact with name {name} and phone {number} add successful'
    
@@ -93,7 +93,7 @@ def change(name: str, old_number:str, new_number: str):
 # take phone from dict 
 @error_handler
 def get_phone(name: str):
-    return COMMAND_ARRAY[name]
+    return str(CONTACTS_ARRAY[name])
 
 
 # ask get phone give phone by name
@@ -101,7 +101,7 @@ def get_phone(name: str):
 def show_phone(name: str):
     user_name = Name(name)
 
-    look_phone = get_phone(user_name)
+    look_phone = get_phone(user_name.value)
     if look_phone: 
         return look_phone
     
@@ -130,7 +130,7 @@ def page_pagination(*argv):
     print(f"page {int(argv[0][0])} of {len(pages)}")
 
     if pages:
-      return f"this pagination don't work"
+      return "this pagination don't work"
 
 COMMAND_ARRAY = {
     "hello": lambda: print("May I help you?"),
@@ -160,6 +160,7 @@ def parser(command):
 
 @ welcome_bot
 def main():
+    CONTACTS_ARRAY.open_file()
     while True:
         user_input = input("Please enter your command: ").lower().strip()
         command, data = parser(user_input)
@@ -167,11 +168,12 @@ def main():
         print(command(*data))
         
         if command == say_good_bye:
+            CONTACTS_ARRAY.save_to_file()
             break
 
 if __name__ == "__main__":
-    address_book = AddressBook()
-    address_book.save_in_file()
+    
+    
 
     # try:
     #     with open("address_book.txt", "rb") as file:
@@ -179,6 +181,5 @@ if __name__ == "__main__":
     # except:
     #     pass
     main()
-    address_book.open_file()
     # with open("address_book.txt", "wb") as file:
     #     pickle.dump(CONTACTS_ARRAY, file)
