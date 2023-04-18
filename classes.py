@@ -1,6 +1,7 @@
 from collections import UserDict
 import datetime
 from itertools import islice
+import csv
 
 class Field:
     def __init__(self, value: str):
@@ -17,14 +18,23 @@ class Field:
 class Birthday(Field):
     # add for hw 11
     @property
-    def born(self):
-        return f"This class Birthday {self.__born}"
+    def born(self) -> datetime.date:
+        return self._born
 
     @born.setter
-    def born(self, value: str):
-        if not value:
-            raise ValueError("Birthday is not attaching")
-        self.__born = value
+    def born(self, value):
+        try: 
+            self._value = datetime.strptime(value, "%d-%m-%Y").date()
+        except ValueError:
+            print(f"Birthday {value} is not attaching")
+
+    def __repr__(self) -> str:
+        return datetime.strftime(self._value, "%d-%m-%Y")
+    
+
+        # if not value:
+        #     raise ValueError("Birthday is not attaching")
+        # self.__born = value
             
 
 class Name(Field):
@@ -35,24 +45,22 @@ class Phone(Field):
     # pass
     # add for hw 11
     @property
-    def phone_value(self):
-        return f"Bad phone number {self.__phone_value}"
+    def value(self):
+        return self._value
     
-    @phone_value.setter
-    def phone_value(self, value: str):
-        if value:
+    @value.setter
+    def value(self, value):
+        if not value:
             raise ValueError("Number is not correct")
-        self.__phone_value = value
+        self._value = value
     
 
 class Record:
     def __init__(self, name: Name, phone: Phone = None, birthday: Birthday = None):
         self.name = name
-        self.phones = []
-        self.birthday = birthday # add for hw 11
-    
-        if phone:
-            self.phones.append(phone)
+        self.phones = [phone] if phone is not None else []
+        self.birthday = birthday
+
 
     def add_phone_field(self, phone_number: Phone):
         self.phones.append(phone_number)
@@ -97,6 +105,10 @@ class Record:
 class AddressBook(UserDict):
     index = 0 # add for hw 11
 
+    def __init__(self):
+        self.filename = "contacts_book.csv"
+        self.data = {}
+
     def add_record(self, rec: Record):
         self.data[rec.name.value] = rec
     
@@ -110,3 +122,33 @@ class AddressBook(UserDict):
             if AddressBook.IndentationError > len(self):
                 raise StopIteration()
             AddressBook.index += step
+
+    def open_file(self):
+        with open(self.filename, "r") as file:
+            reader = csv.DictReader(file, delimiter=',')
+            for row in reader:
+                self.data[row['name']] = {'phones': row['phones'], 'birthday': row['birthday']}
+
+    def save_in_file(self):
+        with open(self.filename, 'w') as file:
+            header_names = ['name', 'phone', 'birthday']
+            writer = csv.DictWriter(file, fieldnames=header_names, delimiter=',')
+            writer.writeheader()
+            for k, v in self.data.items():
+                writer.writerow({'name': k, 'phones': v['phones'], 'birthday': v['birthday']})
+
+    def search(self, ask_me):
+        result = ""
+        if len(ask_me) <3: 
+            result = "*** The request must consist of 3 or more characters ***"
+
+            for k, v in self.data.items():
+                if (ask_me in k) or (ask_me in v['phone']):
+                    result += (f" Found: {k} :\t\t{v}\n")
+                for i in v['phones']:
+                    if ask_me in i:
+                        result += (f" Found: {k} :\t\t{v}\n")
+            if result:
+                print(result)
+            else:
+                print("*** Nothing found ***")

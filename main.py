@@ -1,7 +1,7 @@
 import functools
 from classes import * 
 
-import pickle
+# import pickle
 
 
 CONTACTS_ARRAY = AddressBook()
@@ -170,11 +170,15 @@ def main():
             break
 
 if __name__ == "__main__":
-    try:
-        with open("address_book.txt", "rb") as file:
-            CONTACTS_ARRAY = pickle.load(file)
-    except:
-        pass
+    address_book = AddressBook()
+    address_book.save_in_file()
+
+    # try:
+    #     with open("address_book.txt", "rb") as file:
+    #         CONTACTS_ARRAY = pickle.load(file)
+    # except:
+    #     pass
     main()
-    with open("address_book.txt", "wb") as file:
-        pickle.dump(CONTACTS_ARRAY, file)
+    address_book.open_file()
+    # with open("address_book.txt", "wb") as file:
+    #     pickle.dump(CONTACTS_ARRAY, file)
