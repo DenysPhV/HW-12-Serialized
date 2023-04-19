@@ -56,9 +56,9 @@ class Phone(Field):
     
 
 class Record:
-    def __init__(self, name: Name, phone: Phone = None, birthday: Birthday = None):
+    def __init__(self, name: Name, phones: list[Phone] = [], birthday: Birthday = None):
         self.name = name
-        self.phones = [phone] if phone is not None else []
+        self.phones = phones
         self.birthday = birthday
 
 
@@ -100,14 +100,12 @@ class Record:
                    )
                return (next_birthday - current_date).days
            return None
-
+    def __str__(self) -> str:
+        return f"Name {self.name} phones: {';'.join([str(p) for p in self.phones])} {str(self.birthday) if self.birthday else ''}"
        
 class AddressBook(UserDict):
     index = 0 # add for hw 11
-
-    def __init__(self):
-        self.filename = "contacts_book.csv"
-        self.data = {}
+    filename = "contacts_book.csv"
 
     def add_record(self, rec: Record):
         self.data[rec.name.value] = rec
@@ -127,15 +125,19 @@ class AddressBook(UserDict):
         with open(self.filename, "r") as file:
             reader = csv.DictReader(file, delimiter=',')
             for row in reader:
-                self.data[row['name']] = {'phones': row['phones'], 'birthday': row['birthday']}
+                self.add_record(Record(Name(row['name']),
+                                       [Phone(p) for p in row['phones'].split(';')],
+                                       Birthday(row['birthday']) if row['birthday'] != 'None' else None))
 
-    def save_in_file(self):
-        with open(self.filename, 'w') as file:
-            header_names = ['name', 'phone', 'birthday']
+    def save_to_file(self):
+        with open(self.filename, 'w', newline='') as file:
+            header_names = ['name', 'phones', 'birthday']
             writer = csv.DictWriter(file, fieldnames=header_names, delimiter=',')
             writer.writeheader()
-            for k, v in self.data.items():
-                writer.writerow({'name': k, 'phones': v['phones'], 'birthday': v['birthday']})
+            for rec in self.data.values():
+                writer.writerow({'name': str(rec.name), 
+                                 'phones': ';'.join([str(p) for p in rec.phones]), 
+                                 'birthday': str(rec.birthday)})
 
     def search(self, ask_me):
         result = ""
