@@ -25,7 +25,7 @@ for delete number:                          delete name tel.                (exa
 -----------------------------------------------------------------------------------------------------------------------
 """)
         except KeyError:
-            print("This user was not found in the phone book!")
+            print("This user was not found in the contact book!")
         except ValueError:
             print("Invalid value. Try again.")
         except IndexError:
@@ -131,6 +131,15 @@ def page_pagination(*argv):
 
     if pages:
       return "this pagination don't work"
+    
+@error_handler
+def search(user_input):
+    if user_input.lower() == "search":
+        ask_me = user_input.split(" ")[1]
+        address_book.search(ask_me)
+
+    return ValueError
+
 
 COMMAND_ARRAY = {
     "hello": lambda: print("May I help you?"),
@@ -145,7 +154,8 @@ COMMAND_ARRAY = {
 	"bye": say_good_bye,
 	"quit": say_good_bye,
 	"close": say_good_bye,
-	".": say_good_bye
+	".": say_good_bye,
+    "search": search
 }
 
 
@@ -172,14 +182,6 @@ def main():
             break
 
 if __name__ == "__main__":
-    
-    
-
-    # try:
-    #     with open("address_book.txt", "rb") as file:
-    #         CONTACTS_ARRAY = pickle.load(file)
-    # except:
-    #     pass
+    address_book = AddressBook()
     main()
-    # with open("address_book.txt", "wb") as file:
-    #     pickle.dump(CONTACTS_ARRAY, file)
+ 

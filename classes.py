@@ -7,16 +7,14 @@ class Field:
     def __init__(self, value: str):
         self.value = value
 
-    # add for hw 11
     def __str__(self) -> str:
         return f"{self.value}"
-    # add for hw 11
+
     def __repr__(self) -> str:
          return f"{self.value}"
 
-# add for hw 11
 class Birthday(Field):
-    # add for hw 11
+  
     @property
     def born(self) -> datetime.date:
         return self._born
@@ -30,29 +28,27 @@ class Birthday(Field):
 
     def __repr__(self) -> str:
         return datetime.strftime(self._value, "%d-%m-%Y")
-    
-
-        # if not value:
-        #     raise ValueError("Birthday is not attaching")
-        # self.__born = value
             
-
 class Name(Field):
    pass
 
 
 class Phone(Field):
-    # pass
-    # add for hw 11
+
     @property
     def value(self):
         return self._value
     
     @value.setter
     def value(self, value):
-        if not value:
-            raise ValueError("Number is not correct")
-        self._value = value
+        phone_number = (value.strip().removeprefix("+").replace("-", "").replace(" ", ""))
+      
+        if phone_number.isdigit() and phone_number.startswith("380") and len(phone_number) == 12:
+            self._value = phone_number
+            
+        self._value = None
+        raise ValueError
+
     
 
 class Record:
@@ -81,7 +77,7 @@ class Record:
                 return f"Phone {old_number.value} changed on {new_number.value}"
         return f"Contact does not contain such phone number: {old_number}"
 
-# add for hw 11
+
     def days_to_birthday(self):
         current_date = datetime.now()
 
@@ -100,6 +96,7 @@ class Record:
                    )
                return (next_birthday - current_date).days
            return None
+        
     def __str__(self) -> str:
         return f"Name {self.name} phones: {';'.join([str(p) for p in self.phones])} {str(self.birthday) if self.birthday else ''}"
        
@@ -112,8 +109,7 @@ class AddressBook(UserDict):
     
     def show_all(self):
         return '\n'.join([f'{r.name.value} : {",".join([str(p) for p in r.phones])}' for r in self.data.values()])
-   
-    # add for hw 11
+
     def iteration(self, step=5):
         while AddressBook.index < len(self):
             yield list(islice(self.items(), AddressBook.index, AddressBook.index+step))
@@ -142,7 +138,7 @@ class AddressBook(UserDict):
     def search(self, ask_me):
         result = ""
         if len(ask_me) <3: 
-            result = "*** The request must consist of 3 or more characters ***"
+            result = "The request must consist of 3 or more characters"
 
             for k, v in self.data.items():
                 if (ask_me in k) or (ask_me in v['phone']):
@@ -153,4 +149,4 @@ class AddressBook(UserDict):
             if result:
                 print(result)
             else:
-                print("*** Nothing found ***")
+                print("Nothing found")
