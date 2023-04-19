@@ -56,7 +56,7 @@ def attach(name: str, number: str):
     
     rec = Record(user_name, [phone])
     CONTACTS_ARRAY.add_record(rec)
-    return f'Contact with name {name} and phone {number} add successful'
+    return f'Contact with name {name} and phone {phone} add successful'
    
 @error_handler
 def attach_birthday(name, birthday):
