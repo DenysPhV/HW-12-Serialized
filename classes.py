@@ -1,5 +1,5 @@
 from collections import UserDict
-import datetime
+from datetime import datetime
 from itertools import islice
 import csv
 
@@ -17,15 +17,19 @@ class Field:
 class Birthday(Field):
   
     @property
-    def born(self) -> datetime.date:
-        return self._born
+    def value(self) -> datetime.date:
+        return self._value
 
-    @born.setter
-    def born(self, value):
+    @value.setter
+    def value(self, value):
+
+        if value is None:
+            return f"You don't add birthday"
+
         try: 
             self._value = datetime.strptime(value, "%d-%m-%Y").date()
         except ValueError:
-            print(f"Birthday {value} is not attaching")
+           print(f"Entered {value} is not correct date. Please use format: 'dd-mm-yyyy'")
 
     def __repr__(self) -> str:
         return datetime.strftime(self._value, "%d-%m-%Y")
@@ -59,9 +63,6 @@ class Phone(Field):
             raise ValueError
         self._value = phone_number
 
-        
-
-    
 
 class Record:
     def __init__(self, name: Name, phones: list[Phone] = [], birthday: Birthday = None):
@@ -90,16 +91,24 @@ class Record:
         return f"Contact does not contain such phone number: {old_number}"
 
 
+    def add_birthday(self, birthday: Birthday):
+
+            if self.name:
+                return(birthday)
+               
+
     def days_to_birthday(self):
         current_date = datetime.now()
 
         if self.birthday is not None:
            birthday: datetime.date = self.birthday.value.date()
+           
            next_birthday = datetime(
                year=current_date.year, 
                month=birthday.month, 
                day=birthday.day
                ).date()
+
            if next_birthday < current_date:
                next_birthday = datetime(
                    year=next_birthday.year + 1,

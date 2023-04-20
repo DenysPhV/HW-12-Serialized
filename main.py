@@ -33,14 +33,12 @@ for delete number:                          delete name tel.                (exa
         return result
     return wrapper
 
-
 def welcome_bot(func):
     def inner(*args, **kwargs):
         greeting = "\nWelcome to Assistant Console Bot\n"
         print("-"*(len(greeting)-2)+greeting+"-"*(len(greeting)-2))
         return func(*args, **kwargs)
     return inner
-
 
 #add name and number in dict
 @error_handler
@@ -62,12 +60,12 @@ def attach(name: str, number: str):
 def attach_birthday(name, birthday):
     user_name = Name(name)
     when_born = Birthday(birthday)
+
     rec:Record = CONTACTS_ARRAY.get(user_name.value)
 
     if rec:
-        rec.days_to_birthday(when_born)
+       return rec.add_birthday(when_born)
    
-
 @error_handler
 def delete(name: str, number: str):
     user_name = Name(name)
@@ -76,7 +74,6 @@ def delete(name: str, number: str):
 
     if rec:
         return rec.delete_phone_field(phone)
-
 
 @error_handler  # change number contact
 def change(name: str, old_number:str, new_number: str):
@@ -89,12 +86,10 @@ def change(name: str, old_number:str, new_number: str):
     if old_number:
         return rec.change_phone_field(old, new)
 
-
 # take phone from dict 
 @error_handler
 def get_phone(name: str):
     return str(CONTACTS_ARRAY[name])
-
 
 # ask get phone give phone by name
 @error_handler
@@ -105,7 +100,6 @@ def show_phone(name: str):
     if look_phone: 
         return look_phone
     
-
 # read dict with contact
 def reader():
     if not CONTACTS_ARRAY:
@@ -120,7 +114,6 @@ def say_good_bye():
 def no_command(*args):
     return 'Unknown command. Try again'
 
-
 @error_handler
 def page_pagination(*argv):
     gen = CONTACTS_ARRAY.iteration(*argv)
@@ -133,8 +126,10 @@ def page_pagination(*argv):
       return "this pagination don't work"
     
 @error_handler
-def search(user_input):
-    if user_input.lower() == "search":
+def search(number, user_input):
+    phone = Phone(number)
+
+    if user_input.lower() and phone:
         ask_me = user_input.split(" ")[1]
         address_book.search(ask_me)
 
@@ -182,6 +177,6 @@ def main():
             break
 
 if __name__ == "__main__":
-    address_book = AddressBook()
+
     main()
  
