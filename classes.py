@@ -5,13 +5,14 @@ import csv
 
 class Field:
     def __init__(self, value: str):
+        self._value = None
         self.value = value
 
     def __str__(self) -> str:
-        return f"{self.value}"
+        return f"{self._value}"
 
     def __repr__(self) -> str:
-         return f"{self.value}"
+         return f"{self._value}"
 
 class Birthday(Field):
   
@@ -30,7 +31,13 @@ class Birthday(Field):
         return datetime.strftime(self._value, "%d-%m-%Y")
             
 class Name(Field):
-   pass
+   @property
+   def value(self):
+       return self._value
+   
+   @value.setter
+   def value(self, value):
+       self._value = value
 
 
 class Phone(Field):
@@ -41,13 +48,18 @@ class Phone(Field):
     
     @value.setter
     def value(self, value):
-        phone_number = (value.strip().removeprefix("+").replace("-", "").replace(" ", ""))
+        phone_number = (value.strip()
+                        .removeprefix("+")
+                        .replace("-", "")
+                        .replace(" ", ""))
       
-        if phone_number.isdigit() and phone_number.startswith("380") and len(phone_number) == 12:
-            self._value = phone_number
-            
-        self._value = None
-        raise ValueError
+        if not (phone_number.isdigit() 
+                and phone_number.startswith("380") 
+                and len(phone_number) == 12):
+            raise ValueError
+        self._value = phone_number
+
+        
 
     
 
