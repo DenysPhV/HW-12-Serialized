@@ -91,11 +91,9 @@ class Record:
         return f"Contact does not contain such phone number: {old_number}"
 
 
-    def add_birthday(self, birthday: Birthday):
+    def add_birthday_field(self, birthday: Birthday):
+        self.birthday = birthday
 
-            if self.name:
-                return(birthday)
-               
 
     def days_to_birthday(self):
         current_date = datetime.now()

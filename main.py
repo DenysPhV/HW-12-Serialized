@@ -64,7 +64,8 @@ def attach_birthday(name, birthday):
     rec:Record = CONTACTS_ARRAY.get(user_name.value)
 
     if rec:
-       return rec.add_birthday(when_born)
+       return rec.add_birthday_field(when_born)
+
    
 @error_handler
 def delete(name: str, number: str):
