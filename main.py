@@ -127,15 +127,10 @@ def page_pagination(*argv):
       return "this pagination don't work"
     
 @error_handler
-def search(number, user_input):
-    phone = Phone(number)
-
-    if user_input.lower() and phone:
-        ask_me = user_input.split(" ")[1]
-        address_book.search(ask_me)
-
-    return ValueError
-
+def search(name):
+    user_name = Name(name)
+    result = CONTACTS_ARRAY.search(user_name.value)
+    return result
 
 COMMAND_ARRAY = {
     "hello": lambda: print("May I help you?"),

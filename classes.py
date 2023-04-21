@@ -1,3 +1,4 @@
+import calendar
 from collections import UserDict
 from datetime import datetime
 from itertools import islice
@@ -154,18 +155,14 @@ class AddressBook(UserDict):
                                  'phones': ';'.join([str(p) for p in rec.phones]), 
                                  'birthday': str(rec.birthday)})
 
-    def search(self, ask_me):
-        result = ""
-        if len(ask_me) <3: 
-            result = "The request must consist of 3 or more characters"
+    def search(self, name):
+        try:
+            return self.data[str(name).lower().capitalize()]
+        except KeyError:
+            return "Name not found"
+          
+       
+    
+     
+        
 
-            for k, v in self.data.items():
-                if (ask_me in k) or (ask_me in v['phone']):
-                    result += (f" Found: {k} :\t\t{v}\n")
-                for i in v['phones']:
-                    if ask_me in i:
-                        result += (f" Found: {k} :\t\t{v}\n")
-            if result:
-                print(result)
-            else:
-                print("Nothing found")
