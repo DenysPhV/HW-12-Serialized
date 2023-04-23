@@ -127,10 +127,24 @@ def page_pagination(*argv):
       return "this pagination don't work"
     
 @error_handler
-def search(name):
-    user_name = Name(name)
-    result = CONTACTS_ARRAY.search(user_name.value)
-    return result
+def search(user_input):
+    input_list = user_input.strip().split(" ")
+    param = input_list[0]
+
+    if len(param) > 0:
+        return "search", search_handler(param)
+    raise ValueError
+
+
+@error_handler
+def search_handler(param):
+    search_string = "The following contacts match the search:\n "
+    contact_lines = "\n".join(str(record) for record in list(CONTACTS_ARRAY.search(param)))
+
+    if len(contact_lines) > 0:
+        return search_string + contact_lines
+    return "Your contact doesn't search"
+    
 
 COMMAND_ARRAY = {
     "hello": lambda: print("May I help you?"),

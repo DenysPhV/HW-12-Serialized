@@ -90,6 +90,16 @@ class Record:
                 self.phones[i] = new_number
                 return f"Phone {old_number.value} changed on {new_number.value}"
         return f"Contact does not contain such phone number: {old_number}"
+    
+# check enter data from user
+    def match_param(self, param):
+        if str(param).lower() in str(self.name.value).lower():
+            return True
+        
+        for phone in self.phones:
+            if param in phone.value:
+                return True
+        return False
 
 
     def add_birthday_field(self, birthday: Birthday):
@@ -155,11 +165,23 @@ class AddressBook(UserDict):
                                  'phones': ';'.join([str(p) for p in rec.phones]), 
                                  'birthday': str(rec.birthday)})
 
-    def search(self, name):
-        try:
-            return self.data[str(name).lower().capitalize()]
-        except KeyError:
-            return "Name not found"
+    # def search(self, name, phone):
+    #     try:
+    #         return self.data[str(name).lower().capitalize(), phone]
+           
+    #     except KeyError:
+    #         return "Name not found"
+
+    def search(self, param):
+        contacts = []
+        for record in self.data.values():
+            if record.match_param(param):
+                contacts.append(record)
+        return contacts
+    
+
+
+      
           
        
     
